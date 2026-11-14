@@ -170,6 +170,14 @@ def test_add():
     assert Style(color="red") + None == Style(color="red")
 
 
+def test_add_null_style_caching():
+    not_null = Style(link="http://x").update_link(None)
+    # Style() + not_null should be truthy, and Style() + Style() should remain falsy
+    assert bool(Style() + not_null) is True
+    assert bool(Style() + Style()) is False
+
+
+
 def test_iadd():
     style = Style(color="red")
     style += Style(bold=True)

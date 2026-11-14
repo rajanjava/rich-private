@@ -755,6 +755,10 @@ class Style:
         return new_style
 
     def __add__(self, style: "Style | None") -> "Style":
+        if style is None or style._null:
+            return self
+        if self._null:
+            return style.copy() if style.link else style
         combined_style = self._add(style)
         return combined_style.copy() if combined_style.link else combined_style
 
