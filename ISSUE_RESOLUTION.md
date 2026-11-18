@@ -61,6 +61,11 @@ tests/test_style.py:177: AssertionError
 
 ---
 
+## Solution Approach
+1. **Identify Cache Key Collision:** Traced `Style.__add__` and its `@lru_cache` helper `_add`. Because `Style.null()` evaluates as falsy (`bool(Style.null()) == False`), combining styles with null styles hit a cached/short-circuit path that returned an incorrect style reference or broke truthiness semantics.
+2. **Explicit Identity/None Handling Over Truthiness:** Replaced ambiguous boolean truthiness checks with explicit `None` / null-style checks in `Style.__add__` so empty/null styles compose deterministically and cache entries never collide.
+3. **TDD & Regression Safety:** Added `test_add_null_style_caching` in `tests/test_style.py` to verify repeated additions with null styles preserve exact truthiness and attributes across cache hits.
+
 ## 💡 Solution
 
 Handled null style shortcuts directly inside `Style.__add__` before calling the cached `_add` method:
